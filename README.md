@@ -30,3 +30,46 @@ users:{
 
 verication token : use to verification a user by mail (one send to mail and one is token to a user mail)
 
+## Email Deliverability (Resend)
+
+If you see bounces like `Generic Temporary Delivery Failure`, verify sender identity and DNS records.
+
+### Sender address
+
+- Use a real mailbox sender, not `no-reply`.
+- Recommended sender in this project: `auth@gouravindoriya.live`
+
+### Required DNS records
+
+For domain `gouravindoriya.live` configure all of these:
+
+1. SPF (TXT)
+- Host: `@`
+- Value:
+
+```txt
+v=spf1 include:amazonses.com ~all
+```
+
+2. DKIM (CNAME)
+- Add DKIM CNAME records exactly from your Resend domain dashboard.
+
+3. DMARC (TXT)
+- Host: `_dmarc`
+- Value:
+
+```txt
+v=DMARC1; p=none; rua=mailto:dmarc@gouravindoriya.live; ruf=mailto:dmarc@gouravindoriya.live; fo=1; adkim=s; aspf=s; pct=100
+```
+
+After monitoring reports and fixing alignment issues, increase policy:
+
+- `p=quarantine`
+- `p=reject`
+
+### Important checks
+
+- Confirm your sending domain is verified in Resend.
+- Keep `from` domain aligned with SPF/DKIM/DMARC domain.
+- Wait for DNS propagation before re-testing.
+
